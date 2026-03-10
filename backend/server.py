@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import requests
 
-API_KEY = ""
+API_KEY = "AIzaSyD8bxq9nhR2N3lO4FVwom69Bm4OQxrt8kU"
 
 app = Flask(__name__)
 
@@ -88,7 +88,7 @@ Correct code:
 
     text = clean_code(text)
 
-    return jsonify({"fixed": text})
+    return jsonify({"result": text})
 
 
 # =========================
