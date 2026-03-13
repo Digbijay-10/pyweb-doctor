@@ -1,13 +1,10 @@
-from email.mime import text
-
 from flask import Flask, request, jsonify
 import requests
 import re
 
-API_KEY = ""
+API_KEY = "AIzaSyCSVxjIDa18F26xto8DZyedHTqN2LSU6e8"
 
 app = Flask(__name__)
-
 
 # =========================
 # Helper: clean AI output
@@ -47,20 +44,18 @@ def clean_code(text: str) -> str:
 def fix():
 
     data = request.json
+
     code = data.get("code", "")
+    error = data.get("error", "")
 
     prompt = f"""
 Explain the code briefly.
 
 Rules:
-- Keep explanation short
-- Max 4 lines
-- No extra text
-- No long paragraphs
-- Be clear and direct
+Keep explanation short
+Max 4 lines
 
 Format:
-
 Mistake:
 Fix:
 Meaning:
@@ -86,14 +81,13 @@ Error:
         ],
         "generationConfig": {
             "temperature": 0,
-            "maxOutputTokens": 2048,
-            "responseMimeType": "text/plain"
+            "maxOutputTokens": 2048
         }
     }
 
     r = requests.post(url, json=body)
     result = r.json()
-    print("GEMINI RESPONSE:", result)
+
     try:
         text = result["candidates"][0]["content"]["parts"][0]["text"]
     except:
@@ -115,23 +109,44 @@ def reverse():
 
     code = data.get("code", "")
     expected = data.get("expected", "")
+    time_c = data.get("time", "")
+    space_c = data.get("space", "")
+    optimize = data.get("optimize", "")
 
     prompt = f"""
+You are an expert Python debugger and optimizer.
+
 Expected output:
 {expected}
 
-Fix the code and explain.
+Required time complexity:
+{time_c}
+
+Required space complexity:
+{space_c}
+
+Optimization goal:
+{optimize}
+
+Task:
+Fix the code
+Optimize the code
+Match expected output
+Improve performance if possible
+Keep code clean
 
 Code:
 {code}
 
-Return:
+Return in this format:
 
-FIXED:
-<code>
+FIXED: <code>
 
 EXPLANATION:
-<text>
+What changed:
+Why optimized:
+Time complexity:
+Space complexity:
 """
 
     url = (
@@ -227,22 +242,17 @@ Error:
 
     r = requests.post(url, json=body)
     result = r.json()
-    print("EXPLAIN RESPONSE:", result)
+
     try:
         text = result["candidates"][0]["content"]["parts"][0]["text"]
     except:
         text = ""
 
-    import re
-
-   # remove markdown bold only
     text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
-
-    # remove code blocks
     text = text.replace("```", "")
 
     return jsonify({
-    "explanation": text.strip()
+        "explanation": text.strip()
     })
 
 
