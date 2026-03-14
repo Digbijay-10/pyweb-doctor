@@ -1,3 +1,5 @@
+
+
 import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 
@@ -107,6 +109,20 @@ export function activate(context: vscode.ExtensionContext) {
 				prompt: "Enter expected output"
 			});
 
+			if (!expected) return;
+
+			const timeComplexity = await vscode.window.showInputBox({
+				prompt: "Required time complexity (example: O(n), O(log n), skip if none)"
+			});
+
+			const spaceComplexity = await vscode.window.showInputBox({
+				prompt: "Required space complexity (example: O(1), O(n), skip if none)"
+			});
+
+			const optimize = await vscode.window.showInputBox({
+				prompt: "Optimization goal (fast / memory / both / skip)"
+			});
+
 			if (!expected) {
 				return;
 			}
@@ -122,7 +138,10 @@ export function activate(context: vscode.ExtensionContext) {
 						},
 						body: JSON.stringify({
 							code: code,
-							expected: expected
+							expected: expected,
+							time: timeComplexity || "",
+							space: spaceComplexity || "",
+							optimize: optimize || ""
 						})
 					}
 				);
@@ -157,13 +176,90 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 
 				panel.webview.html = `
-				<html>
-				<body style="font-family:sans-serif;padding:10px;">
-				<h2>Reverse Debug</h2>
-				<pre>${explanation}</pre>
-				</body>
-				</html>
-				`;
+<html>
+
+<head>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+
+body {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    font-family: Segoe UI, sans-serif;
+    padding: 12px;
+}
+
+h2 {
+    color: #4fc3f7;
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px;
+}
+
+#content {
+    background: #252526;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+/* code block */
+pre {
+    background: #1e1e1e;
+    color: #00ff9c;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+/* inline code */
+code {
+    color: #00ff9c;
+    background: #333;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* headings */
+h1, h2, h3 {
+    color: #4fc3f7;
+}
+
+/* list spacing */
+li {
+    margin-bottom: 6px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Explanation</h2>
+
+<div id="content"></div>
+
+<script>
+const text = ${JSON.stringify(explanation)};
+document.getElementById("content").innerHTML = marked.parse(text);
+</script>
+
+</body>
+</html>
+`;
 
 			} catch {
 
@@ -238,26 +334,90 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 				panel.webview.html = `
-				<html>
-				<body style="font-family:sans-serif;padding:10px;">
+<html>
 
-				<h2>Explanation</h2>
+<head>
 
-				<div style="
-				background:#1e1e1e;
-				color:#ddd;
-				padding:10px;
-				border-radius:6px;
-				white-space:pre-wrap;
-				">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-				${explanation}
+<style>
 
-				</div>
+body {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    font-family: Segoe UI, sans-serif;
+    padding: 12px;
+}
 
-				</body>
-				</html>
-				`;
+h2 {
+    color: #4fc3f7;
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px;
+}
+
+#content {
+    background: #252526;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+/* code block */
+pre {
+    background: #1e1e1e;
+    color: #00ff9c;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+/* inline code */
+code {
+    color: #00ff9c;
+    background: #333;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* headings */
+h1, h2, h3 {
+    color: #4fc3f7;
+}
+
+/* list spacing */
+li {
+    margin-bottom: 6px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Explanation</h2>
+
+<div id="content"></div>
+
+<script>
+const text = ${JSON.stringify(explanation)};
+document.getElementById("content").innerHTML = marked.parse(text);
+</script>
+
+</body>
+</html>
+`;
 
 			} catch {
 

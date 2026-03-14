@@ -49,13 +49,16 @@ def fix():
     error = data.get("error", "")
 
     prompt = f"""
-Explain the code briefly.
+You are a Python debugger.
+
+Fix the code error.
 
 Rules:
-Keep explanation short
-Max 4 lines
+Return fixed code
+Do not explain too much
 
 Format:
+
 Mistake:
 Fix:
 Meaning:
@@ -81,11 +84,15 @@ Error:
         ],
         "generationConfig": {
             "temperature": 0,
-            "maxOutputTokens": 2048
+            "maxOutputTokens": 4096
         }
     }
 
     r = requests.post(url, json=body)
+
+    print("STATUS:", r.status_code)
+    print("RAW:", r.text)
+
     result = r.json()
 
     try:
@@ -93,9 +100,20 @@ Error:
     except:
         text = code
 
-    text = clean_code(text)
+    # -------- FIX PARSER --------
 
-    return jsonify({"result": text})
+    fixed = text
+
+    if "Fix:" in text:
+        parts = text.split("Fix:")
+        fixed = parts[1]
+
+    if "Meaning:" in fixed:
+        fixed = fixed.split("Meaning:")[0]
+
+    fixed = clean_code(fixed)
+
+    return jsonify({"result": fixed.strip()})
 
 
 # =========================
@@ -114,7 +132,17 @@ def reverse():
     optimize = data.get("optimize", "")
 
     prompt = f"""
-You are an expert Python debugger and optimizer.
+You are a senior Python debugger, optimizer, and competitive programmer.
+
+Your job is STRICT:
+
+- Fix the code
+- Ensure expected output is correct
+- Ensure code runs without error
+- Follow required complexity
+- Optimize if possible
+- Rewrite completely if needed
+- Always return valid Python code
 
 Expected output:
 {expected}
@@ -128,23 +156,26 @@ Required space complexity:
 Optimization goal:
 {optimize}
 
-Task:
-Fix the code
-Optimize the code
-Match expected output
-Improve performance if possible
-Keep code clean
-
 Code:
 {code}
 
-Return in this format:
+Rules:
 
-FIXED: <code>
+- If logic is wrong → rewrite code
+- If syntax wrong → fix
+- If slow → optimize
+- If output mismatch → correct
+- Code must run
+- Code must be clean
+
+Return ONLY in this format:
+
+FIXED:
+<code>
 
 EXPLANATION:
 What changed:
-Why optimized:
+Why changed:
 Time complexity:
 Space complexity:
 """
@@ -163,34 +194,69 @@ Space complexity:
         ],
         "generationConfig": {
             "temperature": 0.2,
-            "maxOutputTokens": 2048
+            "maxOutputTokens": 4096
         }
     }
 
-    r = requests.post(url, json=body)
-    result = r.json()
+    # -------------------
+    # RETRY MODE
+    # -------------------
 
-    try:
-        text = result["candidates"][0]["content"]["parts"][0]["text"]
-    except:
-        text = ""
+    text = ""
+    r = None
+
+    for _ in range(2):
+
+        r = requests.post(url, json=body)
+
+        print("STATUS:", r.status_code)
+        print("RAW:", r.text)
+
+        try:
+            result = r.json()
+            text = result["candidates"][0]["content"]["parts"][0]["text"]
+        except:
+            text = ""
+
+        if "FIXED:" in text:
+            break
+
+
+    # -------------------
+    # PARSER (JUDGE MODE)
+    # -------------------
 
     fixed = ""
     explanation = ""
 
-    if "EXPLANATION:" in text:
-        parts = text.split("EXPLANATION:")
-        fixed = parts[0].replace("FIXED:", "").strip()
-        explanation = parts[1].strip()
+    if "FIXED:" in text:
+        parts = text.split("FIXED:")
+        rest = parts[1]
+
+        if "EXPLANATION:" in rest:
+            parts2 = rest.split("EXPLANATION:")
+            fixed = parts2[0].strip()
+            explanation = parts2[1].strip()
+        else:
+            fixed = rest.strip()
+
     else:
         fixed = text.strip()
+        explanation = "Model format incorrect, fallback used"
+
 
     fixed = clean_code(fixed)
+
+    if not fixed:
+        fixed = code
+        explanation = "Failed to generate fix, returned original code"
+
 
     return jsonify({
         "fixed": fixed,
         "explanation": explanation
     })
+
 
 
 # =========================
@@ -236,11 +302,15 @@ Error:
         ],
         "generationConfig": {
             "temperature": 0.3,
-            "maxOutputTokens": 2048
+            "maxOutputTokens": 4096
         }
     }
 
     r = requests.post(url, json=body)
+
+    print("STATUS:", r.status_code)
+    print("RAW:", r.text)
+
     result = r.json()
 
     try:
@@ -248,8 +318,10 @@ Error:
     except:
         text = ""
 
-    text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
+    # safer cleanup
+    text = text.replace("```python", "")
     text = text.replace("```", "")
+
 
     return jsonify({
         "explanation": text.strip()
