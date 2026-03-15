@@ -1,75 +1,75 @@
 {
-  "name": "pyweb-doctor",
-  "displayName": "pyweb-doctor",
-  "description": "PyWeb Doctor Gemini Fix Extension",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.109.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onCommand:pyweb-doctor.fixCode",
-    "onCommand:pyweb-doctor.reverseDebug",
-    "onCommand:pyweb-doctor.showExplanation"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "pyweb-doctor.fixCode",
-        "title": "Fix with PyWeb Doctor"
-      },
-      {
-        "command": "pyweb-doctor.reverseDebug",
-        "title": "Reverse Debug with PyWeb Doctor"
-      },
-      {
-        "command": "pyweb-doctor.showExplanation",
-        "title": "Show Explanation (PyWeb Doctor)"
-      }
-    ],
-    "menus": {
-      "editor/context": [
-        {
-          "command": "pyweb-doctor.fixCode",
-          "when": "editorTextFocus",
-          "group": "navigation"
-        },
-        {
-          "command": "pyweb-doctor.reverseDebug",
-          "when": "editorTextFocus",
-          "group": "navigation"
-        },
-        {
-          "command": "pyweb-doctor.showExplanation",
-          "when": "editorTextFocus",
-          "group": "navigation"
-        }
-      ]
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "@types/node-fetch": "^2.6.13",
-    "@types/vscode": "^1.109.0",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2",
-    "eslint": "^9.39.3",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1"
-  },
-  "dependencies": {
-    "node-fetch": "^2.7.0"
-  }
+"name": "stacksage",
+"displayName": "StackSage",
+"description": "StackSage Gemini Fix Extension",
+"version": "0.0.1",
+"engines": {
+"vscode": "^1.109.0"
+},
+"categories": [
+"Other"
+],
+"activationEvents": [
+"onCommand:stacksage.fixCode",
+"onCommand:stacksage.reverseDebug",
+"onCommand:stacksage.showExplanation"
+],
+"main": "./out/extension.js",
+"contributes": {
+"commands": [
+{
+"command": "stacksage.fixCode",
+"title": "Fix with StackSage"
+},
+{
+"command": "stacksage.reverseDebug",
+"title": "Reverse Debug with StackSage"
+},
+{
+"command": "stacksage.showExplanation",
+"title": "Show Explanation (StackSage)"
+}
+],
+"menus": {
+"editor/context": [
+{
+"command": "stacksage.fixCode",
+"when": "editorTextFocus",
+"group": "navigation"
+},
+{
+"command": "stacksage.reverseDebug",
+"when": "editorTextFocus",
+"group": "navigation"
+},
+{
+"command": "stacksage.showExplanation",
+"when": "editorTextFocus",
+"group": "navigation"
+}
+]
+}
+},
+"scripts": {
+"vscode:prepublish": "npm run compile",
+"compile": "tsc -p ./",
+"watch": "tsc -watch -p ./",
+"pretest": "npm run compile && npm run lint",
+"lint": "eslint src",
+"test": "vscode-test"
+},
+"devDependencies": {
+"@types/mocha": "^10.0.10",
+"@types/node": "22.x",
+"@types/node-fetch": "^2.6.13",
+"@types/vscode": "^1.109.0",
+"@vscode/test-cli": "^0.0.12",
+"@vscode/test-electron": "^2.5.2",
+"eslint": "^9.39.3",
+"typescript": "^5.9.3",
+"typescript-eslint": "^8.56.1"
+},
+"dependencies": {
+"node-fetch": "^2.7.0"
+}
 }
