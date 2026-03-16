@@ -1,71 +1,151 @@
-# pyweb-doctor README
+# StackSage (pyweb-doctor)
 
-This is the README for your extension "pyweb-doctor". After writing up a brief description, we recommend including the following sections.
+StackSage is an AI-powered VS Code extension that fixes, explains, and improves code using Google Gemini API with a Python Flask backend.
 
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+This project was built for the Google Gemini AI Hackathon.
 
 ---
 
-## Following extension guidelines
+## Features
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+- Fix incorrect code using AI
+- Explain code in simple language
+- Improve code quality
+- Works inside VS Code
+- Python backend using Flask
+- Gemini API integration
+- Automatic response cleaning
+- Handles indentation errors
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+Commands available:
 
-## Working with Markdown
+- Fix Code
+- Explain Code
+- Improve Code
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+---
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+## Technologies Used
 
-## For more information
+- Google Gemini API
+- Python Flask backend
+- TypeScript VS Code extension
+- Node.js
+- REST API
+- JSON
+- GitHub
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+---
 
-**Enjoy!**
+## Requirements
+
+Install before running:
+
+- Python 3.10+
+- Node.js
+- VS Code
+- Gemini API key
+
+Install Python packages:
+
+pip install flask requests google-genai
+
+---
+
+## Reproducible Testing Instructions
+
+Follow these steps to run the project.
+
+### 1. Clone repo
+
+git clone https://github.com/YOUR_USERNAME/pyweb-doctor.git
+
+cd pyweb-doctor
+
+
+### 2. Setup backend
+
+cd backend
+
+pip install -r requirements.txt
+
+
+### 3. Set API key
+
+Windows PowerShell
+
+$env:GEMINI_API_KEY="YOUR_API_KEY"
+
+Linux / Mac
+
+export GEMINI_API_KEY="YOUR_API_KEY"
+
+
+### 4. Run backend
+
+python server.py
+
+Expected output:
+
+Running on http://127.0.0.1:5000
+
+
+### 5. Run extension
+
+Open extension folder in VS Code
+
+Press F5
+
+
+### 6. Test
+
+Open any Python file
+
+Select code
+
+Right click →
+
+Fix Code / Explain Code / Improve Code
+
+
+### Expected result
+
+- Code fixed
+- Explanation shown
+- No backend errors
+
+---
+
+## Known Issues
+
+- Requires internet connection
+- Requires valid API key
+- Backend must be running
+
+---
+
+## Release Notes
+
+### 1.0.0
+
+Initial release
+
+- Fix code
+- Explain code
+- Improve code
+- Gemini integration
+
+---
+
+## Future Improvements
+
+- Cloud deployment
+- More languages
+- ADK agent support
+- UI improvements
+
+---
+
+## Author
+
+Built for Google Gemini Hackathon

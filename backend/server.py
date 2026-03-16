@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+from google import genai
 
 API_KEY = ""
 
@@ -36,35 +37,24 @@ def clean_code(text: str):
     return "\n".join(cleaned).strip()
 
 
-#  GEMINI 
+#  GEMINI (UPDATED TO GENAI SDK)
 
 def call_gemini(prompt):
 
-    url = (
-        "https://generativelanguage.googleapis.com/v1beta/models/"
-        "gemini-2.5-flash:generateContent?key=" + API_KEY
-    )
-
-    body = {
-        "contents": [
-            {
-                "role": "user",
-                "parts": [{"text": prompt}]
-            }
-        ],
-        "generationConfig": {
-            "temperature": 0.2,
-            "maxOutputTokens": 4096
-        }
-    }
-
-    r = requests.post(url, json=body)
-
     try:
-        result = r.json()
-        return result["candidates"][0]["content"]["parts"][0]["text"]
-    except:
-        print(r.text)
+
+        client = genai.Client(api_key=API_KEY)
+
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
+        return response.text
+
+    except Exception as e:
+
+        print("Gemini error:", e)
         return ""
 
 
@@ -166,7 +156,6 @@ Code:
     return jsonify({
         "explanation": text
     })
-
 
 
 if __name__ == "__main__":
